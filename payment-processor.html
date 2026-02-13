@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Processing | DeadStock Exchange</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #27ae60;
+            --light: #f4f7f6;
+            --dark: #333;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --info: #3498db;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo span { color: var(--accent); }
+
+        .header-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background: #229954; }
+
+        .btn-secondary {
+            background: var(--info);
+        }
+
+        .btn-secondary:hover { background: #2980b9; }
+
+        .btn-danger {
+            background: var(--danger);
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover { background: #c0392b; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: var(--primary);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 5px rgba(39, 174, 96, 0.2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .summary-box {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .summary-item.total {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary);
+            border-top: 1px solid #ddd;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--dark);
+            transition: 0.3s;
+        }
+
+        .tab-button.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .payment-method {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .method-option {
+            border: 2px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .method-option:hover {
+            border-color: var(--accent);
+            background: var(--light);
+        }
+
+        .method-option input[type="radio"] {
+            width: auto;
+        }
+
+        .method-option.selected {
+            border-color: var(--accent);
+            background: #e8f8f5;
+        }
+
+        .commission-calculator {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .commission-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .commission-item.net {
+            font-weight: bold;
+            color: var(--success);
+            border: none;
+            margin-bottom: 0;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .receipt {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            border: 2px solid var(--accent);
+            text-align: center;
+        }
+
+        .receipt-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--success);
+        }
+
+        .receipt-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .receipt-total {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .payment-history {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .history-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-table tr:hover {
+            background: var(--light);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+            .payment-method { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .history-table { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Dead<span>Stock</span> Exchange</div>
+        <div class="header-right">
+            <div class="user-info">
+                <span id="userEmail">Guest</span>
+            </div>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('payment-form', this)">💳 Make Payment</button>
+            <button class="tab-button" onclick="switchTab('commission-dashboard', this)">📈 Commission Dashboard</button>
+            <button class="tab-button" onclick="switchTab('payment-history', this)">📋 Payment History</button>
+        </div>
+
+        <!-- PAYMENT FORM TAB -->
+        <div id="payment-form" class="tab-content active">
+            <div class="card">
+                <h2>💳 Process Payment</h2>
+                <p>Complete your inventory purchase or seller payout</p>
+
+                <div id="paymentMessage"></div>
+
+                <form id="paymentForm" onsubmit="processPayment(event)">
+                    <div class="form-group">
+                        <label for="paymentType">Payment Type *</label>
+                        <select id="paymentType" required onchange="updatePaymentForm()">
+                            <option value="">Select Payment Type</option>
+                            <option value="buyer">Buyer Payment (Purchase Inventory)</option>
+                            <option value="seller">Seller Payout (Commission)</option>
+                        </select>
+                    </div>
+
+                    <!-- BUYER PAYMENT SECTION -->
+                    <div id="buyerSection" style="display:none;">
+                        <div class="form-group">
+                            <label for="orderID">Order ID / Product ID *</label>
+                            <input type="text" id="orderID" placeholder="e.g., ORD-2026-001234">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="productValue">Product Value ($) *</label>
+                                <input type="number" id="productValue" placeholder="1000.00" step="0.01" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">Quantity</label>
+                                <input type="number" id="quantity" placeholder="1" value="1" min="1">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="shipping">Shipping Cost ($)</label>
+                            <input type="number" id="shipping" placeholder="0.00" step="0.01" min="0" value="0">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="buyerName">Your Name *</label>
+                                <input type="text" id="buyerName" placeholder="John Doe" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="buyerEmail">Your Email *</label>
+                                <input type="email" id="buyerEmail" placeholder="buyer@company.com" required>
+                            </div>
+                        </div>
+
+                        <div class="commission-calculator">
+                            <div class="commission-item">
+                                <span>Product Value:</span>
+                                <span id="buyerProductValue">$0.00</span>
+                            </div>
+                            <div class="commission-item">
+                                <span>Platform Fee (2.5%):</span>
+                                <span id="buyerPlatformFee">$0.00</span>
+                            </div>
+                            <div class="commission-item">
+                                <span>Shipping:</span>
+                                <span id="buyerShipping">$0.00</span>
+                            </div>
+                            <div class="commission-item net">
+                                <span>TOTAL PAYMENT:</span>
+                                <span id="buyerTotal">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SELLER PAYOUT SECTION -->
+                    <div id="sellerSection" style="display:none;">
+                        <div class="form-group">
+                            <label for="salesAmount">Gross Sales Amount ($) *</label>
+                            <input type="number" id="salesAmount" placeholder="10000.00" step="0.01" min="0">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="sellerName">Business Name *</label>
+                                <input type="text" id="sellerName" placeholder="Your Business Inc." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerEmail">Business Email *</label>
+                                <input type="email" id="sellerEmail" placeholder="seller@company.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="payoutMethod">Payout Method *</label>
+                                <select id="payoutMethod" required>
+                                    <option value="">Select Method</option>
+                                    <option value="bank">Bank Transfer</option>
+                                    <option value="check">Check</option>
+                                    <option value="stripe">Stripe Connect</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="bankAccount">Bank Account / Details</label>
+                                <input type="text" id="bankAccount" placeholder="Last 4 digits or account alias">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="taxID">Tax ID / Business ID</label>
+                            <input type="text" id="taxID" placeholder="EIN or Tax ID">
+                        </div>
+
+                        <div class="commission-calculator">
+                            <div class="commission-item">
+                                <span>Gross Sales:</span>
+                                <span id="sellerSales">$0.00</span>
+                            </div>
+                            <div class="commission-item">
+                                <span>Platform Commission (8%):</span>
+                                <span id="sellerCommission">$0.00</span>
+                            </div>
+                            <div class="commission-item">
+                                <span>Processing Fee (1%):</span>
+                                <span id="sellerProcessing">$0.00</span>
+                            </div>
+                            <div class="commission-item net">
+                                <span>NET PAYOUT:</span>
+                                <span id="sellerNet">$0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="agreeTax" required>
+                                I confirm details are accurate and agree to tax reporting
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Payment Method *</label>
+                        <div class="payment-method">
+                            <div class="method-option selected" onclick="selectPaymentMethod('credit', this)">
+                                <input type="radio" name="paymentMethod" value="credit" checked>
+                                💳 Credit Card
+                            </div>
+                            <div class="method-option" onclick="selectPaymentMethod('bank', this)">
+                                <input type="radio" name="paymentMethod" value="bank">
+                                🏦 Bank Transfer
+                            </div>
+                            <div class="method-option" onclick="selectPaymentMethod('paypal', this)">
+                                <input type="radio" name="paymentMethod" value="paypal">
+                                🅿️ PayPal
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="cardDetails" class="form-row">
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number</label>
+                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-group">
+                            <label for="cardExpiry">Expiry Date</label>
+                            <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: 100%; padding: 15px; font-size: 1.1rem; margin-top: 20px;">
+                        ✓ Process Payment
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- COMMISSION DASHBOARD TAB -->
+        <div id="commission-dashboard" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Sales (This Month)</div>
+                    <div class="stat-value" id="monthSales">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Commission Earned</div>
+                    <div class="stat-value" id="totalCommission">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Net Earnings</div>
+                    <div class="stat-value" id="netEarnings">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending Payout</div>
+                    <div class="stat-value" id="pendingPayout">$0.00</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Commission Breakdown</h2>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Sale Amount</th>
+                            <th>Commission (8%)</th>
+                            <th>Processing (1%)</th>
+                            <th>Net</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="commissionTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #999;">No sales yet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PAYMENT HISTORY TAB -->
+        <div id="payment-history" class="tab-content">
+            <div class="card">
+                <h2>💳 Payment History</h2>
+                <p>View all your transactions and payment details</p>
+
+                <div style="margin-bottom: 20px;">
+                    <input type="text" id="searchPayments" placeholder="🔍 Search by Order ID, Email..." style="width: 100%; padding: 10px;">
+                </div>
+
+                <div class="payment-history">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #999;">No payments yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PLATFORM_FEE = 0.025; // 2.5% for buyers
+        const SELLER_COMMISSION = 0.08; // 8% for sellers
+        const PROCESSING_FEE = 0.01; // 1% for sellers
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkSession();
+            loadPaymentHistory();
+            setupCalculators();
+        });
+
+        function checkSession() {
+            let userEmail = localStorage.getItem('buyerSession') || localStorage.getItem('sellerSession');
+            if (userEmail) {
+                try {
+                    const session = JSON.parse(userEmail);
+                    document.getElementById('userEmail').textContent = session.email || 'User';
+                } catch {
+                    document.getElementById('userEmail').textContent = userEmail;
+                }
+            } else {
+                window.location.href = 'buyer-login.html';
+            }
+        }
+
+        function updatePaymentForm() {
+            const type = document.getElementById('paymentType').value;
+            document.getElementById('buyerSection').style.display = type === 'buyer' ? 'block' : 'none';
+            document.getElementById('sellerSection').style.display = type === 'seller' ? 'block' : 'none';
+        }
+
+        function setupCalculators() {
+            document.getElementById('productValue').addEventListener('input', calculateBuyerTotal);
+            document.getElementById('shipping').addEventListener('input', calculateBuyerTotal);
+            document.getElementById('quantity').addEventListener('input', calculateBuyerTotal);
+            document.getElementById('salesAmount').addEventListener('input', calculateSellerPayout);
+        }
+
+        function calculateBuyerTotal() {
+            const value = parseFloat(document.getElementById('productValue').value) || 0;
+            const shipping = parseFloat(document.getElementById('shipping').value) || 0;
+            const fee = value * PLATFORM_FEE;
+            const total = value + fee + shipping;
+
+            document.getElementById('buyerProductValue').textContent = '$' + value.toFixed(2);
+            document.getElementById('buyerPlatformFee').textContent = '$' + fee.toFixed(2);
+            document.getElementById('buyerShipping').textContent = '$' + shipping.toFixed(2);
+            document.getElementById('buyerTotal').textContent = '$' + total.toFixed(2);
+        }
+
+        function calculateSellerPayout() {
+            const sales = parseFloat(document.getElementById('salesAmount').value) || 0;
+            const commission = sales * SELLER_COMMISSION;
+            const processing = sales * PROCESSING_FEE;
+            const net = sales - commission - processing;
+
+            document.getElementById('sellerSales').textContent = '$' + sales.toFixed(2);
+            document.getElementById('sellerCommission').textContent = '$' + commission.toFixed(2);
+            document.getElementById('sellerProcessing').textContent = '$' + processing.toFixed(2);
+            document.getElementById('sellerNet').textContent = '$' + net.toFixed(2);
+        }
+
+        function selectPaymentMethod(method, element) {
+            document.querySelectorAll('.method-option').forEach(e => e.classList.remove('selected'));
+            element.classList.add('selected');
+            document.querySelector(`input[value="${method}"]`).checked = true;
+            document.getElementById('cardDetails').style.display = method === 'credit' ? 'grid' : 'none';
+        }
+
+        function switchTab(tabId, button) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            button.classList.add('active');
+        }
+
+        function processPayment(event) {
+            event.preventDefault();
+            const type = document.getElementById('paymentType').value;
+            const messageDiv = document.getElementById('paymentMessage');
+
+            if (type === 'buyer') {
+                processBuyerPayment(messageDiv);
+            } else if (type === 'seller') {
+                processSellerPayout(messageDiv);
+            }
+        }
+
+        function processBuyerPayment(messageDiv) {
+            const orderID = document.getElementById('orderID').value;
+            const email = document.getElementById('buyerEmail').value;
+            const total = document.getElementById('buyerTotal').textContent;
+
+            if (!orderID || !email) {
+                messageDiv.innerHTML = '<div class="error-message">❌ Please fill in all required fields</div>';
+                return;
+            }
+
+            const payment = {
+                id: 'TXN-' + Date.now(),
+                type: 'Buyer - Inventory Purchase',
+                orderID,
+                email,
+                amount: parseFloat(document.getElementById('buyerTotal').textContent.replace('$', '')),
+                date: new Date().toLocaleDateString(),
+                status: 'Completed',
+                fee: parseFloat(document.getElementById('buyerPlatformFee').textContent.replace('$', ''))
+            };
+
+            let payments = JSON.parse(localStorage.getItem('payments') || '[]');
+            payments.push(payment);
+            localStorage.setItem('payments', JSON.stringify(payments));
+
+            messageDiv.innerHTML = `
+                <div class="success-message">
+                    <div style="font-size: 1.3rem; margin-bottom: 15px;">✅ Payment Processed Successfully!</div>
+                    <div class="receipt">
+                        <div class="receipt-header">TRANSACTION RECEIPT</div>
+                        <div class="receipt-item">
+                            <span>Transaction ID:</span>
+                            <strong>${payment.id}</strong>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Order ID:</span>
+                            <strong>${orderID}</strong>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Amount Paid:</span>
+                            <strong>${total}</strong>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Date:</span>
+                            <strong>${payment.date}</strong>
+                        </div>
+                        <div class="receipt-total">Status: COMPLETED ✓</div>
+                    </div>
+                    <p style="margin-top: 15px; color: #155724;">A confirmation email has been sent to ${email}</p>
+                </div>
+            `;
+            document.getElementById('paymentForm').reset();
+            setTimeout(loadPaymentHistory, 500);
+        }
+
+        function processSellerPayout(messageDiv) {
+            const businessName = document.getElementById('sellerName').value;
+            const email = document.getElementById('sellerEmail').value;
+            const net = document.getElementById('sellerNet').textContent;
+
+            if (!businessName || !email) {
+                messageDiv.innerHTML = '<div class="error-message">❌ Please fill in all required fields</div>';
+                return;
+            }
+
+            const payout = {
+                id: 'PAYOUT-' + Date.now(),
+                type: 'Seller Commission',
+                business: businessName,
+                email,
+                grossSales: parseFloat(document.getElementById('salesAmount').value),
+                commission: parseFloat(document.getElementById('sellerCommission').textContent.replace('$', '')),
+                processing: parseFloat(document.getElementById('sellerProcessing').textContent.replace('$', '')),
+                netPayout: parseFloat(net.replace('$', '')),
+                date: new Date().toLocaleDateString(),
+                status: 'Pending'
+            };
+
+            let payments = JSON.parse(localStorage.getItem('payments') || '[]');
+            let commissions = JSON.parse(localStorage.getItem('commissions') || '[]');
+            payments.push({
+                ...payout,
+                amount: payout.netPayout
+            });
+            commissions.push(payout);
+            localStorage.setItem('payments', JSON.stringify(payments));
+            localStorage.setItem('commissions', JSON.stringify(commissions));
+
+            messageDiv.innerHTML = `
+                <div class="success-message">
+                    <div style="font-size: 1.3rem; margin-bottom: 15px;">✅ Payout Initiated!</div>
+                    <div class="receipt">
+                        <div class="receipt-header">PAYOUT SUMMARY</div>
+                        <div class="receipt-item">
+                            <span>Payout ID:</span>
+                            <strong>${payout.id}</strong>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Business:</span>
+                            <strong>${businessName}</strong>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Gross Sales:</span>
+                            <strong>$${payout.grossSales.toFixed(2)}</strong>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Commission (8%):</span>
+                            <strong>-$${payout.commission.toFixed(2)}</strong>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Processing (1%):</span>
+                            <strong>-$${payout.processing.toFixed(2)}</strong>
+                        </div>
+                        <div class="receipt-total">Net Payout: ${net}</div>
+                    </div>
+                    <p style="margin-top: 15px; color: #155724;">Status: Pending Processing - Funds will reach your account in 1-2 business days</p>
+                </div>
+            `;
+            document.getElementById('paymentForm').reset();
+            setTimeout(loadPaymentHistory, 500);
+        }
+
+        function loadPaymentHistory() {
+            const payments = JSON.parse(localStorage.getItem('payments') || '[]');
+            const tableBody = document.getElementById('paymentTableBody');
+
+            if (payments.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">No payments yet</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = payments.map(p => `
+                <tr>
+                    <td><strong>${p.id}</strong></td>
+                    <td>${p.date}</td>
+                    <td>${p.type}</td>
+                    <td>$${typeof p.amount === 'number' ? p.amount.toFixed(2) : p.amount}</td>
+                    <td>
+                        <span class="status-badge status-${p.status.toLowerCase()}">
+                            ${p.status}
+                        </span>
+                    </td>
+                    <td><button class="btn" style="padding: 6px 12px; font-size: 0.85rem;">View Details</button></td>
+                </tr>
+            `).join('');
+
+            loadCommissionDashboard();
+        }
+
+        function loadCommissionDashboard() {
+            const commissions = JSON.parse(localStorage.getItem('commissions') || '[]');
+            const tableBody = document.getElementById('commissionTableBody');
+            let totalSales = 0, totalCommission = 0, totalProcessing = 0;
+
+            if (commissions.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">No commissions yet</td></tr>';
+            } else {
+                tableBody.innerHTML = commissions.map(c => {
+                    totalSales += c.grossSales;
+                    totalCommission += c.commission;
+                    totalProcessing += c.processing;
+                    return `
+                        <tr>
+                            <td>${c.date}</td>
+                            <td>$${c.grossSales.toFixed(2)}</td>
+                            <td>$${c.commission.toFixed(2)}</td>
+                            <td>$${c.processing.toFixed(2)}</td>
+                            <td><strong>$${c.netPayout.toFixed(2)}</strong></td>
+                            <td><span class="status-badge status-${c.status.toLowerCase()}">${c.status}</span></td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            const netEarnings = totalSales - totalCommission - totalProcessing;
+            document.getElementById('monthSales').textContent = '$' + totalSales.toFixed(2);
+            document.getElementById('totalCommission').textContent = '$' + totalCommission.toFixed(2);
+            document.getElementById('netEarnings').textContent = '$' + netEarnings.toFixed(2);
+            document.getElementById('pendingPayout').textContent = '$' + (commissions.filter(c => c.status === 'Pending').reduce((sum, c) => sum + c.netPayout, 0)).toFixed(2);
+        }
+
+        function logout() {
+            localStorage.removeItem('buyerSession');
+            localStorage.removeItem('sellerSession');
+            window.location.href = 'logout.html';
+        }
+    </script>
+</body>
+</html>

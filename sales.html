@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeadStock Exchange | Liquidate Your Inventory</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #27ae60;
+            --light: #f4f7f6;
+            --dark: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: bold; }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            color: white;
+            padding: 80px 5%;
+            text-align: center;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .btn:hover { background: #219150; }
+
+        .container { padding: 40px 5%; }
+
+        .section-title { text-align: center; margin-bottom: 40px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+
+        .card-content { padding: 15px; }
+
+        .price-tag {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #888;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        footer {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">DeadStock<span>X</span></div>
+    <nav>
+        <a href="#">Browse Stock</a>
+        <a href="#">How it Works</a>
+        <a href="#" style="border: 1px solid white; padding: 5px 15px; border-radius: 4px;">Seller Login</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>Turn Obsolete Inventory Into Instant Cash</h1>
+    <p>The #1 Marketplace for B2B Dead Stock, Overruns, and Discontinued Lines.</p>
+    <a href="#" class="btn">Start Selling Today</a>
+</section>
+
+<div class="container">
+    <h2 class="section-title">Latest Deal Listings</h2>
+    <div class="grid">
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" alt="Product">
+            <div class="card-content">
+                <h3>Bulk Smart Watches (Lot of 50)</h3>
+                <p>Condition: New-In-Box. 2023 Model.</p>
+                <span class="price-tag">$750</span>
+                <span class="old-price">$2,500</span>
+                <br>
+                <a href="#" class="btn" style="width: 80%; text-align: center;">View Lot Details</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1558901357-ca41e027e43a?auto=format&fit=crop&w=500&q=80" alt="Product">
+            <div class="card-content">
+                <h3>Industrial Pipe Fittings</h3>
+                <p>Material: Galvanized Steel. 200 Units.</p>
+                <span class="price-tag">$300</span>
+                <span class="old-price">$1,200</span>
+                <br>
+                <a href="#" class="btn" style="width: 80%; text-align: center;">View Lot Details</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80" alt="Product">
+            <div class="card-content">
+                <h3>Last Season Athletic Shoes</h3>
+                <p>Mixed Sizes. Lot of 30 Pairs.</p>
+                <span class="price-tag">$450</span>
+                <span class="old-price">$1,800</span>
+                <br>
+                <a href="#" class="btn" style="width: 80%; text-align: center;">View Lot Details</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2026 DeadStock Exchange. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

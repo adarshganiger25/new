@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard | DeadStock Exchange</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #27ae60;
+            --light: #f4f7f6;
+            --dark: #333;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 3%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        header nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        header nav a:hover {
+            color: var(--accent);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 45px;
+            background: white;
+            color: var(--dark);
+            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a,
+        .dropdown-content button {
+            color: var(--dark);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .dropdown-content a:hover,
+        .dropdown-content button:hover {
+            background: var(--light);
+            color: var(--accent);
+        }
+
+        .dropdown-content button.logout {
+            color: var(--danger);
+            border-top: 1px solid #ddd;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 0;
+            min-height: calc(100vh - 70px);
+        }
+
+        .sidebar {
+            background: white;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-title {
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: #999;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--dark);
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: var(--light);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .page-title {
+            color: var(--primary);
+            font-size: 2rem;
+            margin: 0 0 10px 0;
+        }
+
+        .page-subtitle {
+            color: #666;
+            margin: 0 0 30px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-top: 4px solid var(--accent);
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            color: var(--primary);
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-change {
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .action-btn {
+            background: white;
+            border: 2px solid var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: var(--dark);
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .action-btn-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .action-btn-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .action-btn-desc {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .section-title {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--light);
+            color: var(--primary);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            border-bottom: 2px solid #ddd;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #e8f5e9;
+            color: var(--accent);
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: var(--warning);
+        }
+
+        .status-sold {
+            background: #cce5ff;
+            color: #0066cc;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #219150;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            header nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <div class="logo">DeadStock<span>X</span></div>
+        <nav>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#listings">Listings</a>
+            <a href="#orders">Orders</a>
+            <a href="#analytics">Analytics</a>
+        </nav>
+    </div>
+    <div class="user-menu">
+        <div class="dropdown">
+            <div class="user-avatar">RS</div>
+            <div class="dropdown-content">
+                <a href="#profile">👤 My Profile</a>
+                <a href="#settings">⚙️ Settings</a>
+                <a href="#billing">💳 Billing</a>
+                <a href="seller-info.html" target="_blank">📚 Seller Guide</a>
+                <a href="#help">❓ Help Center</a>
+                <button class="logout" onclick="logout()">🚪 Logout</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="dashboard">
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">Navigation</div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active">📊 Dashboard</a></li>
+                <li><a href="#">📦 Listings</a></li>
+                <li><a href="#">📤 Bulk Upload</a></li>
+                <li><a href="#">📋 Orders</a></li>
+                <li><a href="#">📈 Analytics</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-title">Tools</div>
+            <ul class="sidebar-menu">
+                <li><a href="commission-earnings.html">💰 Commission & Earnings</a></li>
+                <li><a href="#">🏷️ Pricing Rules</a></li>
+                <li><a href="#">⏰ Inventory Age</a></li>
+                <li><a href="#">🚚 Shipping</a></li>
+                <li><a href="#">💬 Messages</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-title">Account</div>
+            <ul class="sidebar-menu">
+                <li><a href="#">⭐ Verification</a></li>
+                <li><a href="#">👤 Profile</a></li>
+                <li><a href="#">⚙️ Settings</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-title">Resources</div>
+            <ul class="sidebar-menu">
+                <li><a href="seller-info.html" target="_blank">📚 Seller Guide</a></li>
+                <li><a href="#help">❓ Help Center</a></li>
+                <li><a href="#">📞 Contact Support</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <h1 class="page-title">Welcome Back, FreshStart Supply Co!</h1>
+        <p class="page-subtitle">Here's what's happening with your inventory today</p>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Active Listings</div>
+                <div class="stat-value">127</div>
+                <div class="stat-change">↑ 12 this week</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Sales</div>
+                <div class="stat-value">$24,500</div>
+                <div class="stat-change">↑ $3,200 this week</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Commission Earned</div>
+                <div class="stat-value">$1,715</div>
+                <div class="stat-change">Paid out monthly</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg. Sale Time</div>
+                <div class="stat-value">8 days</div>
+                <div class="stat-change negative">↓ 2 days slower</div>
+            </div>
+        </div>
+
+        <div class="section-title">Quick Actions</div>
+        <div class="action-buttons">
+            <a href="#" class="action-btn">
+                <div class="action-btn-icon">➕</div>
+                <div class="action-btn-title">List New Item</div>
+                <div class="action-btn-desc">Add a single product</div>
+            </a>
+            <a href="#" class="action-btn">
+                <div class="action-btn-icon">📊</div>
+                <div class="action-btn-title">Bulk Upload</div>
+                <div class="action-btn-desc">Upload 100+ items</div>
+            </a>
+            <a href="payment-processor.html" class="action-btn">
+                <div class="action-btn-icon">💰</div>
+                <div class="action-btn-title">Commission & Payouts</div>
+                <div class="action-btn-desc">View earnings & get paid</div>
+            </a>
+        </div>
+
+        <div class="section-title">Recent Listings</div>
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Listed</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Industrial Pipe Fittings</strong></td>
+                        <td>200 units</td>
+                        <td>$300</td>
+                        <td>5 days ago</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td><button class="btn btn-small">Edit</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Premium Fabric Roll Stock</strong></td>
+                        <td>500 meters</td>
+                        <td>$800</td>
+                        <td>3 days ago</td>
+                        <td><span class="status-badge status-active">Active</span></td>
+                        <td><button class="btn btn-small">Edit</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Office Furniture Bundle</strong></td>
+                        <td>15 units</td>
+                        <td>$1,200</td>
+                        <td>2 days ago</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td><button class="btn btn-small">Edit</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Last Season Athletic Shoes</strong></td>
+                        <td>30 pairs</td>
+                        <td>$450</td>
+                        <td>12 days ago</td>
+                        <td><span class="status-badge status-sold">Sold Out</span></td>
+                        <td><button class="btn btn-small">Relist</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section-title">Recent Orders</div>
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Item</th>
+                        <th>Buyer</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#12847</td>
+                        <td>Industrial Pipe Fittings (50)</td>
+                        <td>Midwest Distributors</td>
+                        <td>$150</td>
+                        <td>Today</td>
+                        <td><span class="status-badge status-active">Shipped</span></td>
+                    </tr>
+                    <tr>
+                        <td>#12846</td>
+                        <td>Premium Fabric Roll (100m)</td>
+                        <td>Fashion Collective</td>
+                        <td>$160</td>
+                        <td>Yesterday</td>
+                        <td><span class="status-badge status-active">Shipped</span></td>
+                    </tr>
+                    <tr>
+                        <td>#12845</td>
+                        <td>Office Chairs (12)</td>
+                        <td>Corporate Solutions LLC</td>
+                        <td>$800</td>
+                        <td>2 days ago</td>
+                        <td><span class="status-badge status-sold">Delivered</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Check if seller is logged in
+    function checkSellerSession() {
+        const sellerSession = localStorage.getItem('sellerSession');
+        
+        if (!sellerSession) {
+            window.location.href = 'seller-login.html';
+            return;
+        }
+        
+        try {
+            const session = JSON.parse(sellerSession);
+            // Use session data if needed
+        } catch(e) {
+            window.location.href = 'seller-login.html';
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('sellerSession');
+        sessionStorage.clear();
+        window.location.href = 'logout.html';
+    }
+
+    // Check session on page load
+    window.addEventListener('load', checkSellerSession);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logged Out | DeadStock Exchange</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #27ae60;
+            --light: #f4f7f6;
+            --dark: #333;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .logout-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 30px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            background: #e8f5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin: 0 0 15px 0;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .info-box {
+            background: var(--light);
+            padding: 20px;
+            border-left: 4px solid var(--accent);
+            border-radius: 6px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            color: var(--primary);
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+        }
+
+        .info-box p {
+            color: #666;
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        .info-box li {
+            color: #666;
+            padding: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .info-box li:before {
+            content: "✓ ";
+            color: var(--accent);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #219150;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .support-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #ddd;
+        }
+
+        .support-link p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0 0 10px 0;
+        }
+
+        .support-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+
+        .support-link a:hover {
+            color: #219150;
+        }
+
+        .timer {
+            color: #999;
+            font-size: 0.85rem;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .logout-container {
+                padding: 40px 20px;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .subtitle {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="logout-container">
+    <div class="logo">DeadStock<span>X</span></div>
+    
+    <div class="success-icon">👋</div>
+    
+    <h1>You've Been Logged Out</h1>
+    <p class="subtitle">Your session has been securely closed. Thank you for using DeadStock Exchange!</p>
+
+    <div class="info-box">
+        <h3>🔒 Your Account is Secure</h3>
+        <ul>
+            <li>Session automatically cleared</li>
+            <li>Cookies safely removed</li>
+            <li>No active sessions remaining</li>
+        </ul>
+    </div>
+
+    <div class="button-group">
+        <a href="index.html" class="btn btn-primary">Back to Home</a>
+        <a href="buyer-login.html" class="btn btn-secondary">Buyer Login</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
+        <a href="buyer-login.html" class="btn btn-secondary" style="text-align: center; flex: 1;">🛍️ Continue Buying</a>
+        <a href="seller-login.html" class="btn btn-secondary" style="text-align: center; flex: 1;">📊 Seller Portal</a>
+    </div>
+
+    <div class="support-link">
+        <p>Need help?</p>
+        <a href="#">Contact Support</a>
+        <a href="#">Knowledge Base</a>
+        <a href="#">Report Issue</a>
+    </div>
+
+    <div class="timer">
+        💾 Your browsing history has been cleared for security.
+    </div>
+</div>
+
+<script>
+    // Clear all session data on logout
+    localStorage.removeItem('buyerSession');
+    localStorage.removeItem('sellerSession');
+    sessionStorage.clear();
+    
+    // Optional: Show auto-redirect message
+    let redirectSeconds = 10;
+    const timerElement = document.querySelector('.timer');
+    
+    const redirectTimer = setInterval(() => {
+        redirectSeconds--;
+        if (redirectSeconds === 0) {
+            clearInterval(redirectTimer);
+            // window.location.href = 'index.html'; // Uncomment to auto-redirect
+        }
+    }, 1000);
+</script>
+
+</body>
+</html>

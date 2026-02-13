@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Your Inventory | DeadStock Exchange</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #27ae60;
+            --light: #f4f7f6;
+            --dark: #333;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #3498db;
+            --success: #27ae60;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logo span { color: var(--accent); }
+
+        nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover { color: var(--accent); }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover { background: #229954; }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 5%;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin: 0 0 20px 0;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin: 0 0 30px 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 60px 5%;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary);
+            text-align: center;
+            margin: 0 0 50px 0;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .benefit-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 4px solid var(--accent);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .benefit-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .benefit-card h3 {
+            color: var(--primary);
+            margin: 15px 0;
+        }
+
+        .benefit-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .why-section {
+            background: white;
+        }
+
+        .comparison-table {
+            background: white;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background: var(--light);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .step-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            padding-left: 80px;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 20px;
+            top: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .step-card h3 {
+            color: var(--primary);
+            margin: 0 0 10px 0;
+        }
+
+        .step-card p {
+            margin: 0;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .features-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-box {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .feature-box h4 {
+            color: var(--primary);
+            margin: 0 0 10px 0;
+        }
+
+        .feature-box p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .pricing-section {
+            background: white;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .pricing-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 16px rgba(39, 174, 96, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--accent);
+            box-shadow: 0 4px 16px rgba(39, 174, 96, 0.2);
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #f0f9f6 0%, white 100%);
+        }
+
+        .price-tag {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .price-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .price-features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .price-features li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .price-features li:before {
+            content: "✓ ";
+            color: var(--accent);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .testimonials-section {
+            background: var(--light);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--accent);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 3px;
+        }
+
+        .testimonial-role {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .testimonial-rating {
+            color: #ffc107;
+            margin-top: 10px;
+        }
+
+        .faq-section {
+            background: white;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            background: var(--light);
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--primary);
+            transition: 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #e8f4f0;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-toggle.active {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .faq-answer.show {
+            max-height: 500px;
+            padding: 20px;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary) 0%, #34495e 100%);
+            color: white;
+            padding: 100px 5%;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin: 0 0 20px 0;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            margin: 0 0 30px 0;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 5%;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .step-card {
+                padding-left: 30px;
+            }
+
+            .step-number {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            section {
+                padding: 40px 5%;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Dead<span>Stock</span> Exchange</div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="sales-enhanced.html">Marketplace</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#faq">FAQ</a>
+        </nav>
+        <div class="auth-buttons">
+            <a href="seller-login.html" class="btn">Seller Login</a>
+            <a href="buyer-login.html" class="btn btn-outline">Buyer Login</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>🎯 Sell Your Dead Stock & Overstock Inventory</h1>
+        <p>Turn slow-moving inventory into immediate cash. Reach thousands of qualified bulk buyers on the #1 B2B liquidation platform.</p>
+        <div class="cta-buttons">
+            <a href="seller-login.html" class="btn" style="padding: 15px 30px; font-size: 1rem;">Start Selling Today →</a>
+            <a href="#how-it-works" class="btn btn-outline" style="padding: 15px 30px; font-size: 1rem;">Learn How It Works</a>
+        </div>
+    </section>
+
+    <section class="why-section">
+        <div class="container">
+            <h2 class="section-title">Why Sell with DeadStock Exchange?</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value">50,000+</div>
+                    <div class="stat-label">Active Buyers Waiting</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">$500M+</div>
+                    <div class="stat-label">Inventory Moved</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">8 days avg</div>
+                    <div class="stat-label">Time to First Sale</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">95% seller</div>
+                    <div class="stat-label">Satisfaction Rate</div>
+                </div>
+            </div>
+
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h3>Fast Liquidation</h3>
+                    <p>Sell your entire inventory quickly. Average sale within 8 days with no minimum quantities.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">💰</div>
+                    <h3>Maximize Value</h3>
+                    <p>Get competitive pricing and quick payouts. We handle all logistics and compliance.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📦</div>
+                    <h3>No Inventory Hassle</h3>
+                    <p>Let us handle shipping & delivery coordination. You focus on your next sale.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🛣️</div>
+                    <h3>Massive Reach</h3>
+                    <p>Access 50,000+ pre-qualified bulk buyers across 100+ industries looking for deals.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">✅</div>
+                    <h3>Verified Buyers</h3>
+                    <p>All buyers are KYC verified. No more dealing with unqualified or unreliable customers.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔒</div>
+                    <h3>100% Secure</h3>
+                    <p>Escrow payment protection, buyer verification, insurance, and full refund guarantees.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" style="background: white;">
+        <div class="container">
+            <h2 class="section-title">How to Get Started in 4 Steps</h2>
+            
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Create Account</h3>
+                    <p>Sign up with your business information. Verify your email and complete quick KYC in 5 minutes.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>List Your Inventory</h3>
+                    <p>Upload product details including photos, quantity, condition, and asking price. Use our bulk upload tool.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Get Buyer Offers</h3>
+                    <p>Receive offers from interested buyers. Negotiate terms and finalize deals. Most sell within 8 days.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Get Paid Fast</h3>
+                    <p>We handle shipping & delivery. You receive payment 1-2 business days after delivery confirmation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">Seller Tools & Features</h2>
+            
+            <div class="features-grid">
+                <div class="feature-box">
+                    <h4>📦 Bulk Upload</h4>
+                    <p>Upload 100+ products at once via CSV. Save hours vs manual listing.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>📊 Live Dashboard</h4>
+                    <p>Monitor listings, offers, and earnings in real-time from your dashboard.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>🏷️ Auto-Pricing</h4>
+                    <p>Set pricing rules and let AI auto-adjust based on market demand.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>⏰ Inventory Age</h4>
+                    <p>Track how long items have been listed and auto-discount old inventory.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>💬 Buyer Chat</h4>
+                    <p>Direct messaging with interested buyers. Negotiate terms seamlessly.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>📈 Analytics</h4>
+                    <p>Detailed reports on views, offers, sell-through rates, and earnings history.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>🚚 Shipping Tools</h4>
+                    <p>Integrated shipping with multiple carriers and discounted rates.</p>
+                </div>
+                <div class="feature-box">
+                    <h4>💳 Easy Payouts</h4>
+                    <p>Get paid via bank transfer, check, or Stripe Connect. Monthly payouts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing-section">
+        <div class="container">
+            <h2 class="section-title">Pricing That Works for You</h2>
+            
+            <p style="text-align: center; color: #666; margin-bottom: 40px; font-size: 1.1rem;">
+                Simple, transparent pricing with no hidden fees. No monthly subscription required.
+            </p>
+
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>Standard Plan</h3>
+                    <div class="price-tag">8% + 1%</div>
+                    <div class="price-description">Commission on sales</div>
+                    <ul class="price-features">
+                        <li>Unlimited listings</li>
+                        <li>Basic dashboard</li>
+                        <li>Single uploads</li>
+                        <li>Standard support</li>
+                        <li>Monthly payouts</li>
+                    </ul>
+                    <a href="seller-login.html" class="btn" style="width: 100%;">Get Started</a>
+                </div>
+
+                <div class="pricing-card featured">
+                    <div style="background: var(--accent); color: white; padding: 8px 16px; border-radius: 20px; display: inline-block; margin-bottom: 15px; font-size: 0.85rem; font-weight: 600;">MOST POPULAR</div>
+                    <h3>Premium Plan</h3>
+                    <div class="price-tag">6% + 1%</div>
+                    <div class="price-description">Commission on sales</div>
+                    <ul class="price-features">
+                        <li>Everything in Standard</li>
+                        <li>Bulk upload (CSV)</li>
+                        <li>Auto-pricing rules</li>
+                        <li>Priority support</li>
+                        <li>Advanced analytics</li>
+                        <li>Co-marketing help</li>
+                    </ul>
+                    <a href="seller-login.html" class="btn" style="width: 100%;">Start Free Trial</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Enterprise Plan</h3>
+                    <div class="price-tag">Custom</div>
+                    <div class="price-description">Volume-based pricing</div>
+                    <ul class="price-features">
+                        <li>Everything in Premium</li>
+                        <li>White-label options</li>
+                        <li>Dedicated account manager</li>
+                        <li>Custom integrations</li>
+                        <li>Weekly calls</li>
+                        <li>API access</li>
+                    </ul>
+                    <a href="mailto:sales@deadstockexchange.com" class="btn" style="width: 100%;">Contact Sales</a>
+                </div>
+            </div>
+
+            <p style="text-align: center; color: #666; margin-top: 40px; font-size: 0.95rem;">
+                💡 <strong>Total cost example:</strong> Sell $10,000 of inventory on Premium Plan = $700 in total fees (7%), keep $9,300
+            </p>
+        </div>
+    </section>
+
+    <section class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">Seller Success Stories</h2>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial">
+                    <div class="testimonial-text">
+                        "We had $150K in dead inventory sitting in our warehouse. Listed it here on Monday, sold 80% by Friday. Best decision ever!"
+                    </div>
+                    <div class="testimonial-author">Sarah Chen</div>
+                    <div class="testimonial-role">Founder, Fashion Wholesale Inc.</div>
+                    <div class="testimonial-rating">★★★★★</div>
+                </div>
+
+                <div class="testimonial">
+                    <div class="testimonial-text">
+                        "The platform makes selling overstock incredibly easy. No haggling with unreliable buyers, just professional liquidation. I'm a believer."
+                    </div>
+                    <div class="testimonial-author">Mike Rodriguez</div>
+                    <div class="testimonial-role">Owner, Industrial Supply Co.</div>
+                    <div class="testimonial-rating">★★★★★</div>
+                </div>
+
+                <div class="testimonial">
+                    <div class="testimonial-text">
+                        "Cleared $300K in seasonal inventory in 3 weeks. The bulk upload tool saved us hours of manual work. Absolutely recommend to anyone with overstock."
+                    </div>
+                    <div class="testimonial-author">Jennifer Park</div>
+                    <div class="testimonial-role">Operations Manager, Home Decor Ltd.</div>
+                    <div class="testimonial-rating">★★★★★</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section" id="faq">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What types of inventory can I sell?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You can sell overstock, dead stock, closeouts, liquidations, and surplus inventory across virtually any category: apparel, electronics, furniture, beauty, industrial supplies, seasonal items, returns, B-stock products, and more. We accept inventory from retailers, wholesalers, manufacturers, and liquidators.</p>
+                        <p><strong>Not Allowed:</strong> Counterfeit goods, stolen merchandise, hazardous materials (unless properly sealed/documented), recalled products, or prohibited items.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Is there a minimum quantity to list?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No! You can list as little as 1 unit or as much as 10,000+. Most bulk buyers prefer larger quantities (50+ units), but we welcome all sizes. Our platform helps you find the right buyer for your inventory size.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How long does it take to sell my inventory?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Average time-to-sale is 8 days, but it varies by category:</p>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li><strong>Electronics:</strong> 3-5 days</li>
+                            <li><strong>Fashion/Apparel:</strong> 5-7 days</li>
+                            <li><strong>Furniture/Bulk Items:</strong> 8-12 days</li>
+                            <li><strong>Seasonal Items:</strong> 2-4 days (during peak season)</li>
+                        </ul>
+                        <p style="margin-top: 10px;">Speed increases with competitive pricing, professional photos, and detailed descriptions.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How much does it cost to sell?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Zero upfront fees.</strong> We only earn when you sell!</p>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li><strong>Standard Plan:</strong> 8% platform commission + 1% processing fee = 9% total</li>
+                            <li><strong>Premium Plan:</strong> 6% platform commission + 1% processing fee = 7% total</li>
+                            <li><strong>Enterprise:</strong> Custom pricing based on volume</li>
+                        </ul>
+                        <p style="margin-top: 10px;">No listing fees, no subscription fees, no cancellation fees. Just commission on actual sales.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How do I get paid?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We pay sellers quickly and reliably:</p>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>Payments processed 1-2 business days after delivery confirmation</li>
+                            <li><strong>Payout Methods:</strong> Bank transfer, check, or Stripe Connect</li>
+                            <li><strong>Schedule:</strong> Automatic monthly payouts or request payouts anytime</li>
+                            <li><strong>Minimum:</strong> No minimum payout threshold</li>
+                        </ul>
+                        <p style="margin-top: 10px;">You can track all payouts on your seller dashboard.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Do you handle shipping and logistics?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! We coordinate shipping with your buyers:</p>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>Buyer arranges pickup from your warehouse or we coordinate drop-off</li>
+                            <li>Discounted carrier rates through our logistics partners</li>
+                            <li>Insurance and tracking included</li>
+                            <li>Free return shipping if there's a dispute</li>
+                        </ul>
+                        <p style="margin-top: 10px;">You can also choose to handle your own shipping if preferred.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What if a buyer has issues with their order?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We have a comprehensive dispute resolution process:</p>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>Photo/video documentation of all shipments</li>
+                            <li>Insurance covers damage in transit</li>
+                            <li>Buyer protection with easy returns (seller covers return shipping)</li>
+                            <li>Mediation team to resolve disputes fairly</li>
+                        </ul>
+                        <p style="margin-top: 10px;">Our goal is to protect both sellers and buyers. We enforce our buyer verification and ratings system to minimize issues.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Do I need to create a K YC profile?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, KYC (Know Your Customer) verification is required:</p>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>Takes ~5 minutes to complete</li>
+                            <li>Required information: Business name, address, tax ID, bank details</li>
+                            <li>Improves buyer confidence and reduces fraud</li>
+                            <li>Data is encrypted and compliant with data protection regulations</li>
+                        </ul>
+                        <p style="margin-top: 10px;">This is a one-time requirement per seller account.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Are there any restrictions on what I can sell?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We prohibit selling:</p>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>Counterfeit or inauthentic goods</li>
+                            <li>Stolen merchandise</li>
+                            <li>Hazardous materials (unless properly documented & sealed)</li>
+                            <li>Recalled products</li>
+                            <li>Weapons, explosives, or dangerous items</li>
+                            <li>Illegal goods or services</li>
+                        </ul>
+                        <p style="margin-top: 10px;">Everything else is fair game! Check our full seller agreement for details.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How do I contact support?</span>
+                        <span class="faq-toggle">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We offer multiple support channels:</p>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li><strong>Email:</strong> support@deadstockexchange.com</li>
+                            <li><strong>Phone:</strong> 1-800-DEADSTOCK (1-800-332-3782)</li>
+                            <li><strong>Chat:</strong> Live chat in your seller dashboard 9AM-6PM EST</li>
+                            <li><strong>Help Center:</strong> Comprehensive articles and tutorials</li>
+                        </ul>
+                        <p style="margin-top: 10px;">Premium Plan members get priority support with average response time of 2 hours.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>Ready to Liquidate Your Inventory?</h2>
+        <p>Join thousands of sellers who've successfully moved their dead stock. Start your first sale in minutes.</p>
+        <div class="cta-buttons" style="margin-top: 30px;">
+            <a href="seller-login.html" class="btn" style="background: white; color: var(--primary); padding: 15px 30px; font-size: 1rem; font-weight: 600;">Create Seller Account</a>
+            <a href="mailto:sales@deadstockexchange.com" class="btn btn-outline" style="padding: 15px 30px; font-size: 1rem;">Schedule a Demo</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 DeadStock Exchange. All rights reserved. | <a href="#" style="color: white; text-decoration: none;">Privacy Policy</a> | <a href="#" style="color: white; text-decoration: none;">Terms of Service</a></p>
+    </footer>
+
+    <script>
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const toggle = element.querySelector('.faq-toggle');
+            
+            // Close all other FAQs
+            document.querySelectorAll('.faq-answer.show').forEach(item => {
+                if (item !== answer) {
+                    item.classList.remove('show');
+                    item.previousElementSibling.querySelector('.faq-toggle').classList.remove('active');
+                }
+            });
+            
+            // Toggle current FAQ
+            answer.classList.toggle('show');
+            toggle.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

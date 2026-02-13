@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeadStock Exchange | Liquidate Your Inventory</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #27ae60;
+            --light: #f4f7f6;
+            --dark: #333;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logo span { color: var(--accent); }
+
+        nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover { color: var(--accent); }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-buttons .btn {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 5%;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin: 0 0 15px 0;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin: 0 0 30px 0;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover { 
+            background: #219150;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .stats-section {
+            background: var(--accent);
+            color: white;
+            padding: 40px 5%;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .container { padding: 40px 5%; }
+
+        .section-title { 
+            text-align: center; 
+            margin-bottom: 40px;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .search-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .inventory-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .filter-group:last-child {
+            border-bottom: none;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .filter-group input[type="text"],
+        .filter-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            font-weight: 400;
+            margin: 0;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+
+        .card-image-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card img { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .card:hover img {
+            transform: scale(1.05);
+        }
+
+        .heart-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            transition: color 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .heart-btn:hover {
+            color: #e74c3c;
+        }
+
+        .heart-btn.active {
+            color: #e74c3c;
+        }
+
+        .card-content { padding: 15px; }
+
+        .badge {
+            background: #e8f5e9;
+            color: #27ae60;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .price-tag {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #888;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        .card h3 {
+            margin: 10px 0 8px 0;
+            font-size: 1rem;
+            color: var(--primary);
+        }
+
+        .card p {
+            margin: 5px 0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .seller-info {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .seller-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent);
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+
+        .rating {
+            color: #ffc107;
+            margin-left: auto;
+        }
+
+        .how-it-works {
+            background: white;
+            padding: 40px 5%;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            background: var(--accent);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+
+        .step h4 {
+            color: var(--primary);
+            margin: 15px 0 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .step p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .testimonials {
+            background: var(--light);
+            padding: 40px 5%;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--accent);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 15px;
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .testimonial-author {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 3px;
+        }
+
+        .testimonial-role {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .featured-sellers {
+            background: white;
+            padding: 40px 5%;
+        }
+
+        .sellers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .seller-card {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            cursor: pointer;
+        }
+
+        .seller-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .seller-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 8px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 2rem;
+            color: var(--primary);
+            border: 2px solid var(--accent);
+        }
+
+        .seller-card h4 {
+            color: var(--primary);
+            margin: 15px 0 8px 0;
+            font-size: 1rem;
+        }
+
+        .seller-stats {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .verified-badge {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .faq-section {
+            background: var(--light);
+            padding: 40px 5%;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .faq-question {
+            background: white;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--primary);
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #f0f0f0;
+        }
+
+        .faq-answer {
+            padding: 15px;
+            display: none;
+            background: white;
+            line-height: 1.6;
+            color: #555;
+            border-top: 1px solid #ddd;
+        }
+
+        .faq-answer.show {
+            display: block;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-toggle.active {
+            transform: rotate(45deg);
+        }
+
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 40px 5%;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .footer-section a {
+            display: block;
+            color: #ccc;
+            text-decoration: none;
+            margin-bottom: 8px;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .features-section {
+            background: white;
+            padding: 40px 5%;
+        }
+
+        .features-two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            margin-bottom: 20px;
+            padding-left: 40px;
+            position: relative;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .feature-list h4 {
+            color: var(--primary);
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+        }
+
+        .niche-section {
+            background: var(--light);
+            padding: 40px 5%;
+        }
+
+        .niche-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .niche-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .niche-card h4 {
+            color: var(--primary);
+            margin: 0 0 12px 0;
+            font-size: 1.1rem;
+        }
+
+        .niche-card p {
+            color: #666;
+            margin: 8px 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .niche-card .example {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #555;
+            font-style: italic;
+        }
+
+        .roadmap-section {
+            background: white;
+            padding: 40px 5%;
+        }
+
+        .roadmap-timeline {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .roadmap-item {
+            margin-bottom: 40px;
+            padding-left: 60px;
+            position: relative;
+        }
+
+        .roadmap-marker {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .roadmap-item h4 {
+            color: var(--primary);
+            margin: 0 0 8px 0;
+            font-size: 1.1rem;
+        }
+
+        .roadmap-item p {
+            color: #666;
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .roadmap-item .duration {
+            background: var(--light);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .model-section {
+            background: var(--light);
+            padding: 40px 5%;
+        }
+
+        .model-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .model-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .model-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .model-card h4 {
+            color: var(--primary);
+            margin: 15px 0 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .model-card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .pricing-table {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .pricing-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .pricing-table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .pricing-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .pricing-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .pricing-table tr:nth-child(even) {
+            background: var(--light);
+        }
+
+        .challenges-section {
+            background: white;
+            padding: 40px 5%;
+        }
+
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .challenge-card {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 8px;
+            border-top: 4px solid #e74c3c;
+        }
+
+        .challenge-card h4 {
+            color: #e74c3c;
+            margin: 0 0 12px 0;
+            font-size: 1rem;
+        }
+
+        .challenge-card .label {
+            font-weight: 600;
+            color: var(--primary);
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+
+        .challenge-card.solution {
+            border-top-color: var(--accent);
+        }
+
+        .challenge-card.solution h4 {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .inventory-layout {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .stats-grid,
+            .steps-grid,
+            .testimonial-grid,
+            .sellers-grid,
+            .niche-grid,
+            .model-cards,
+            .challenges-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-two-col {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo"><a href="index.html" style="text-decoration: none; color: white;">DeadStock<span>X</span></a></div>
+    <nav>
+        <a href="seller-info.html" style="color: #f39c12; font-weight: 600;">Sell Your Inventory</a>
+        <a href="#marketplace">Browse Stock</a>
+        <a href="#how-it-works">How it Works</a>
+        <a href="#faq">FAQ</a>
+        <div class="auth-buttons">
+            <span id="loggedInUser" style="color: white; font-weight: 500; margin-right: 20px;"></span>
+            <a href="#" class="btn" onclick="logout(); return false;">Logout</a>
+        </div>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>Turn Obsolete Inventory Into Instant Cash</h1>
+    <p>The #1 Marketplace for B2B Dead Stock, Overruns, and Discontinued Lines.</p>
+    <a href="#" class="btn">Start Buying Today</a>
+</section>
+
+<section class="stats-section">
+    <div class="stats-grid">
+        <div class="stat">
+            <div class="stat-number">$50M+</div>
+            <div class="stat-label">In Inventory Moved</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">5,000+</div>
+            <div class="stat-label">Active Sellers</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">98%</div>
+            <div class="stat-label">Buyer Satisfaction</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">48hrs</div>
+            <div class="stat-label">Avg Sale Completion</div>
+        </div>
+    </div>
+</section>
+
+<div class="container" id="marketplace">
+    <h2 class="section-title">Find Your Perfect Lot</h2>
+    
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search by product, category, or seller..." id="searchInput">
+    </div>
+
+    <div class="inventory-layout">
+        <aside class="sidebar">
+            <div class="filter-group">
+                <label>Category</label>
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="apparel">Apparel & Shoes</option>
+                    <option value="construction">Construction</option>
+                    <option value="fabric">Fabric & Materials</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Price Range</label>
+                <input type="text" placeholder="Min: $0" id="priceMin">
+                <input type="text" placeholder="Max: $10,000" id="priceMax" style="margin-top: 8px;">
+            </div>
+
+            <div class="filter-group">
+                <label>Condition</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" value="new"> New</label>
+                    <label><input type="checkbox" value="like-new"> Like New</label>
+                    <label><input type="checkbox" value="good"> Good</label>
+                    <label><input type="checkbox" value="fair"> Fair</label>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Verified Sellers</label>
+                <label><input type="checkbox" id="verifiedFilter"> Show only verified</label>
+            </div>
+
+            <button class="btn" style="width: 100%; margin-top: 20px;">Apply Filters</button>
+            <button class="btn" style="width: 100%; margin-top: 10px; background: #999;">Reset</button>
+        </aside>
+
+        <div>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" alt="Product">
+                        <button class="heart-btn" onclick="this.classList.toggle('active')">♡</button>
+                    </div>
+                    <div class="card-content">
+                        <span class="badge">Verified Seller</span>
+                        <h3>Bulk Smart Watches (Lot of 50)</h3>
+                        <p>Condition: New-In-Box. 2023 Model.</p>
+                        <span class="price-tag">$750</span>
+                        <span class="old-price">$2,500</span>
+                        <div class="seller-info">
+                            <div class="seller-avatar">TS</div>
+                            <span>Tech Solutions Inc.</span>
+                            <span class="rating">★★★★★</span>
+                        </div>
+                        <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 12px;">View Details</a>
+                        <a href="payment-processor.html?product=smart-watches&price=750" class="btn" style="width: 100%; text-align: center; margin-top: 8px; background: #27ae60;">💳 Buy Now</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1558901357-ca41e027e43a?auto=format&fit=crop&w=500&q=80" alt="Product">
+                        <button class="heart-btn" onclick="this.classList.toggle('active')">♡</button>
+                    </div>
+                    <div class="card-content">
+                        <span class="badge">Verified Seller</span>
+                        <h3>Industrial Pipe Fittings</h3>
+                        <p>Material: Galvanized Steel. 200 Units.</p>
+                        <span class="price-tag">$300</span>
+                        <span class="old-price">$1,200</span>
+                        <div class="seller-info">
+                            <div class="seller-avatar">IS</div>
+                            <span>Industrial Supply Co.</span>
+                            <span class="rating">★★★★☆</span>
+                        </div>
+                        <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 12px;">View Details</a>
+                        <a href="payment-processor.html?product=pipe-fittings&price=300" class="btn" style="width: 100%; text-align: center; margin-top: 8px; background: #27ae60;">💳 Buy Now</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80" alt="Product">
+                        <button class="heart-btn" onclick="this.classList.toggle('active')">♡</button>
+                    </div>
+                    <div class="card-content">
+                        <span class="badge">Hot Deal</span>
+                        <h3>Last Season Athletic Shoes</h3>
+                        <p>Mixed Sizes. Lot of 30 Pairs.</p>
+                        <span class="price-tag">$450</span>
+                        <span class="old-price">$1,800</span>
+                        <div class="seller-info">
+                            <div class="seller-avatar">FW</div>
+                            <span>Fashion Wholesale</span>
+                            <span class="rating">★★★★★</span>
+                        </div>
+                        <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 12px;">View Details</a>
+                        <a href="payment-processor.html?product=athletic-shoes&price=450" class="btn" style="width: 100%; text-align: center; margin-top: 8px; background: #27ae60;">💳 Buy Now</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=500&q=80" alt="Product">
+                        <button class="heart-btn" onclick="this.classList.toggle('active')">♡</button>
+                    </div>
+                    <div class="card-content">
+                        <span class="badge">New Listing</span>
+                        <h3>Inventory Clearance - Mixed Lot</h3>
+                        <p>Electronics, Small Appliances. 150 Units.</p>
+                        <span class="price-tag">$2,100</span>
+                        <span class="old-price">$8,500</span>
+                        <div class="seller-info">
+                            <div class="seller-avatar">EB</div>
+                            <span>Electronics Broker</span>
+                            <span class="rating">★★★★☆</span>
+                        </div>
+                        <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 12px;">View Details</a>
+                        <a href="payment-processor.html?product=mixed-electronics&price=2100" class="btn" style="width: 100%; text-align: center; margin-top: 8px; background: #27ae60;">💳 Buy Now</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1595428904076-102a7da4eb41?auto=format&fit=crop&w=500&q=80" alt="Product">
+                        <button class="heart-btn" onclick="this.classList.toggle('active')">♡</button>
+                    </div>
+                    <div class="card-content">
+                        <span class="badge">Verified Seller</span>
+                        <h3>Premium Fabric Roll Stock</h3>
+                        <p>Cotton & Polyester Blend. 500 Meters.</p>
+                        <span class="price-tag">$800</span>
+                        <span class="old-price">$3,200</span>
+                        <div class="seller-info">
+                            <div class="seller-avatar">TX</div>
+                            <span>Textile Exchange</span>
+                            <span class="rating">★★★★★</span>
+                        </div>
+                        <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 12px;">View Details</a>
+                        <a href="payment-processor.html?product=fabric-stock&price=800" class="btn" style="width: 100%; text-align: center; margin-top: 8px; background: #27ae60;">💳 Buy Now</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1567521464027-f127ff144326?auto=format&fit=crop&w=500&q=80" alt="Product">
+                        <button class="heart-btn" onclick="this.classList.toggle('active')">♡</button>
+                    </div>
+                    <div class="card-content">
+                        <span class="badge">Hot Deal</span>
+                        <h3>Office Furniture Bundle</h3>
+                        <p>Desks, Chairs, Cabinets. Grade A.</p>
+                        <span class="price-tag">$1,200</span>
+                        <span class="old-price">$5,000</span>
+                        <div class="seller-info">
+                            <div class="seller-avatar">OF</div>
+                            <span>Office Furnishings Ltd</span>
+                            <span class="rating">★★★★☆</span>
+                        </div>
+                        <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 12px;">View Details</a>
+                        <a href="payment-processor.html?product=office-furniture&price=1200" class="btn" style="width: 100%; text-align: center; margin-top: 8px; background: #27ae60;">💳 Buy Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="how-it-works" id="how-it-works">
+    <h2 class="section-title">How It Works</h2>
+    <div class="steps-grid">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h4>Search & Browse</h4>
+            <p>Find inventory from verified sellers. Use filters to narrow down by category, price, condition, and location.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <h4>Make an Offer</h4>
+            <p>Contact sellers directly or submit bulk offers. Negotiate price for larger quantities. Free shipping on qualified orders.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <h4>Secure Payment</h4>
+            <p>Pay through our escrow system. Your money is protected until items arrive in perfect condition.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <h4>Receive & Inspect</h4>
+            <p>Items ship within 48 hours. Inspect within the 48-hour window. No questions asked refund policy.</p>
+        </div>
+    </div>
+</section>
+
+<section class="featured-sellers">
+    <h2 class="section-title">Top Verified Sellers</h2>
+    <div class="sellers-grid">
+        <div class="seller-card">
+            <div class="seller-logo">TS</div>
+            <h4>Tech Solutions Inc.</h4>
+            <div class="seller-stats">
+                <div>⭐ 4.9/5 (248 reviews)</div>
+                <div>📦 $12.5M+ Sold</div>
+                <div class="verified-badge">✓ Verified Seller</div>
+            </div>
+            <a href="#" class="btn" style="width: calc(100% - 24px);">View Store</a>
+        </div>
+
+        <div class="seller-card">
+            <div class="seller-logo">FW</div>
+            <h4>Fashion Wholesale</h4>
+            <div class="seller-stats">
+                <div>⭐ 4.8/5 (156 reviews)</div>
+                <div>📦 $8.2M+ Sold</div>
+                <div class="verified-badge">✓ Verified Seller</div>
+            </div>
+            <a href="#" class="btn" style="width: calc(100% - 24px);">View Store</a>
+        </div>
+
+        <div class="seller-card">
+            <div class="seller-logo">TX</div>
+            <h4>Textile Exchange</h4>
+            <div class="seller-stats">
+                <div>⭐ 4.9/5 (312 reviews)</div>
+                <div>📦 $15.8M+ Sold</div>
+                <div class="verified-badge">✓ Verified Seller</div>
+            </div>
+            <a href="#" class="btn" style="width: calc(100% - 24px);">View Store</a>
+        </div>
+
+        <div class="seller-card">
+            <div class="seller-logo">IS</div>
+            <h4>Industrial Supply Co.</h4>
+            <div class="seller-stats">
+                <div>⭐ 4.7/5 (203 reviews)</div>
+                <div>📦 $9.4M+ Sold</div>
+                <div class="verified-badge">✓ Verified Seller</div>
+            </div>
+            <a href="#" class="btn" style="width: calc(100% - 24px);">View Store</a>
+        </div>
+    </div>
+</section>
+
+<section class="testimonials">
+    <h2 class="section-title">What Buyers Say</h2>
+    <div class="testimonial-grid">
+        <div class="testimonial">
+            <div class="testimonial-text">"Saved us $40,000 on inventory costs. The platform makes bulk buying incredibly easy. Shipping was fast and products arrived in perfect condition."</div>
+            <div class="testimonial-author">Marcus Chen</div>
+            <div class="testimonial-role">Retail Operations Manager</div>
+        </div>
+
+        <div class="testimonial">
+            <div class="testimonial-text">"As a small reseller, this is a game-changer. I can now compete with big box stores by buying overstock quantities at wholesale prices. Highly recommend!"</div>
+            <div class="testimonial-author">Sarah Johnson</div>
+            <div class="testimonial-role">Flea Market Vendor</div>
+        </div>
+
+        <div class="testimonial">
+            <div class="testimonial-text">"The verified seller system gives me complete peace of mind. I've bought from 15+ sellers and every transaction has been smooth. 10/10 platform."</div>
+            <div class="testimonial-author">David Patel</div>
+            <div class="testimonial-role">Discount Retailer Owner</div>
+        </div>
+
+        <div class="testimonial">
+            <div class="testimonial-text">"Found raw materials at 60% off retail. Our production costs dropped significantly. This is exactly what our manufacturing team needed."</div>
+            <div class="testimonial-author">Emma Rodriguez</div>
+            <div class="testimonial-role">Operations Director</div>
+        </div>
+    </div>
+</section>
+
+<section class="model-section">
+    <h2 class="section-title">Our Business Model: Selling Liquidity & Space</h2>
+    <div class="model-cards">
+        <div class="model-card">
+            <div class="model-icon">🏪</div>
+            <h4>The Marketplace</h4>
+            <p>A dedicated platform where sellers list slow-moving, overstocked, or out-of-season inventory. We handle buyer acquisition, logistics coordination, and payment processing.</p>
+        </div>
+        <div class="model-card">
+            <div class="model-icon">💰</div>
+            <h4>Commission Model</h4>
+            <p>We take 5–7% commission on successful transactions. No upfront fees, no listing costs. We only profit when you profit.</p>
+        </div>
+        <div class="model-card">
+            <div class="model-icon">⭐</div>
+            <h4>Featured Listings (Optional)</h4>
+            <p>Speed up inventory clearance with featured listing packages. Stand out in search results and reach more qualified buyers—guaranteed faster sales.</p>
+        </div>
+    </div>
+
+    <h3 class="section-title" style="margin-top: 50px; font-size: 1.5rem;">Revenue Example</h3>
+    <div class="pricing-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Scenario</th>
+                    <th>Your Listing Price</th>
+                    <th>Our Commission (7%)</th>
+                    <th>You Keep</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Small Lot</td>
+                    <td>$1,000</td>
+                    <td>$70</td>
+                    <td><strong>$930</strong></td>
+                </tr>
+                <tr>
+                    <td>Medium Lot</td>
+                    <td>$10,000</td>
+                    <td>$700</td>
+                    <td><strong>$9,300</strong></td>
+                </tr>
+                <tr>
+                    <td>Bulk Clearance</td>
+                    <td>$50,000</td>
+                    <td>$3,500</td>
+                    <td><strong>$46,500</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="features-section" id="features">
+    <h2 class="section-title">What You Get: Platform Features</h2>
+    <div class="features-two-col">
+        <div>
+            <h3 style="color: var(--primary); margin-bottom: 25px;">🏭 For Sellers</h3>
+            <ul class="feature-list">
+                <li>
+                    <h4>Bulk Upload Tool</h4>
+                    Upload 1,000+ items via Excel/CSV. No manual listing. Auto-categorization included.
+                </li>
+                <li>
+                    <h4>Inventory Age Tracker</h4>
+                    Dashboard showing exactly how long each item has been listed. Prioritize oldest stock.
+                </li>
+                <li>
+                    <h4>Automated Discounting</h4>
+                    Set rules: "Drop 5% every 7 days if unsold." Platform handles it automatically.
+                </li>
+                <li>
+                    <h4>Shipping Integration</h4>
+                    Real-time quotes from FedEx, UPS, USPS, DHL. Label printing & tracking included.
+                </li>
+                <li>
+                    <h4>Seller Dashboard & Analytics</h4>
+                    Track revenue, conversion rates, which categories move fastest.
+                </li>
+                <li>
+                    <h4>Verified Seller Badge</h4>
+                    Pass KYC verification to build buyer confidence & boost visibility.
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="color: var(--primary); margin-bottom: 25px;">🛍️ For Buyers</h3>
+            <ul class="feature-list">
+                <li>
+                    <h4>Watchlist & Price Alerts</h4>
+                    "Notify me when Cotton Fabric hits 50% off." Smart notifications on price drops.
+                </li>
+                <li>
+                    <h4>Advanced Search & Filtering</h4>
+                    Find by category, price, condition, seller rating. Geofencing for local pickup.
+                </li>
+                <li>
+                    <h4>Verified Seller Badges</h4>
+                    See buyer ratings, reviews, and transaction history. Buy with confidence.
+                </li>
+                <li>
+                    <h4>Secure Escrow Payments</h4>
+                    Money held until items arrive. 48-hour inspection window. Full refund guarantee.
+                </li>
+                <li>
+                    <h4>Instant Shipping Quotes</h4>
+                    See cost before checkout. Free local pickup available on many items.
+                </li>
+                <li>
+                    <h4>Bulk Negotiation</h4>
+                    Contact sellers directly to negotiate volume discounts. Volume pricing available.
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="niche-section">
+    <h2 class="section-title">Strategic Niches We Focus On</h2>
+    <div class="niche-grid">
+        <div class="niche-card">
+            <h4>👗 Fashion & Apparel</h4>
+            <p>Last season's inventory, overstock from forecasting errors, clearance items taking up shelf space.</p>
+            <div class="example">💡 Example: Summer clothes in January → bulk sellers & discount retailers</div>
+        </div>
+        <div class="niche-card">
+            <h4>⚡ Electronics & Components</h4>
+            <p>Obsolete sensors, last-gen chips, overstock connectors, phased-out tech.</p>
+            <div class="example">💡 Example: Old iPhone 12 parts → component resellers, DIY hobbyists, schools</div>
+        </div>
+        <div class="niche-card">
+            <h4>🔨 Construction & Hardware</h4>
+            <p>Leftover tiles, excess paint, plumbing fixtures, supplier overruns.</p>
+            <div class="example">💡 Example: Extra lumber → contractors, property flippers, handymen</div>
+        </div>
+        <div class="niche-card">
+            <h4>🧵 Raw Materials & Fabric</h4>
+            <p>Excess fabric yardage, dyed fabric, discontinued patterns, plastic pellets.</p>
+            <div class="example">💡 Example: Textile overstock → designers, budget fashion brands, craft enthusiasts</div>
+        </div>
+    </div>
+</section>
+
+<section class="roadmap-section" id="roadmap">
+    <h2 class="section-title">Our Execution Roadmap</h2>
+    <div class="roadmap-timeline">
+        <div class="roadmap-item">
+            <div class="roadmap-marker">1</div>
+            <div class="duration">Phase 1 - Weeks 1-4</div>
+            <h4>Supply Acquisition</h4>
+            <p><strong>Goal:</strong> Build initial seller base of 50-100 quality suppliers</p>
+            <p><strong>Strategy:</strong> Cold-call local warehouses/factories. Pitch: "Do you have inventory gathering dust? I'll list it for free—I only take a cut if it sells."</p>
+            <p><strong>Success Metrics:</strong> 50+ sellers onboarded, $500K+ inventory listed</p>
+        </div>
+        <div class="roadmap-item">
+            <div class="roadmap-marker">2</div>
+            <div class="duration">Phase 2 - Weeks 5-12</div>
+            <h4>MVP Website Launch</h4>
+            <p><strong>Goal:</strong> Launch fully functional marketplace</p>
+            <p><strong>Features:</strong> Listings, search, basic orders, Stripe payments, seller dashboard</p>
+            <p><strong>Success Metrics:</strong> 1,000+ listings, first $100K in transaction volume</p>
+        </div>
+        <div class="roadmap-item">
+            <div class="roadmap-marker">3</div>
+            <div class="duration">Phase 3 - Weeks 13-20</div>
+            <h4>Trust & Safety Implementation</h4>
+            <p><strong>Goal:</strong> Build buyer confidence through escrow, verification, and dispute resolution</p>
+            <p><strong>Features:</strong> Hold-in-escrow payment system, KYC verification, seller ratings, 48-hour inspection window</p>
+            <p><strong>Success Metrics:</strong> 98%+ transaction success rate, <1% dispute rate</p>
+        </div>
+        <div class="roadmap-item">
+            <div class="roadmap-marker">4</div>
+            <div class="duration">Phase 4 - Weeks 21+</div>
+            <h4>Scale & Advanced Features</h4>
+            <p><strong>Goal:</strong> Expand capacity and enable data monetization</p>
+            <p><strong>Features:</strong> Bulk upload, inventory age tracker, auto-discounting, API integrations, analytics dashboard, data insights reports</p>
+            <p><strong>Success Metrics:</strong> $50M+ transaction volume, 5,000+ sellers, recurring data revenue</p>
+        </div>
+    </div>
+</section>
+
+<section class="challenges-section">
+    <h2 class="section-title">Challenges & Solutions</h2>
+    <div class="challenges-grid">
+        <div class="challenge-card">
+            <h4>⚠️ Quality Control Issues</h4>
+            <p>Dead stock can be damaged or misrepresented. Buyers lose confidence if items don't match listings.</p>
+        </div>
+        <div class="challenge-card solution">
+            <h4>✓ Our Solution</h4>
+            <p><strong class="label">Requirements:</strong> Real product photos (not stock photos). Accurate condition descriptions.</p>
+            <p><strong class="label">Protection:</strong> 48-hour inspection window. Full refund guarantee.</p>
+            <p><strong class="label">Verification:</strong> Sellers with low ratings get flagged. We monitor quality.</p>
+        </div>
+
+        <div class="challenge-card">
+            <h4>⚠️ High Shipping Costs</h4>
+            <p>Bulk items are expensive to move. Buyers hesitate due to unpredictable logistics costs.</p>
+        </div>
+        <div class="challenge-card solution">
+            <h4>✓ Our Solution</h4>
+            <p><strong class="label">Transparency:</strong> Real-time shipping quotes at checkout. No hidden costs.</p>
+            <p><strong class="label">Local Pickup:</strong> Geofencing shows nearby stock. Free or discounted local pickup.</p>
+            <p><strong class="label">Partnerships:</strong> Negotiated carrier rates. Whitebox fulfillment for large orders.</p>
+        </div>
+
+        <div class="challenge-card">
+            <h4>⚠️ Payment/Dispute Risks</h4>
+            <p>Sellers fear chargebacks. Buyers worry about getting scammed. Trust is hard to build.</p>
+        </div>
+        <div class="challenge-card solution">
+            <h4>✓ Our Solution</h4>
+            <p><strong class="label">Escrow System:</strong> Money held in platform account until buyer confirms receipt.</p>
+            <p><strong class="label">Verification:</strong> KYC for sellers. ID verification for buyers.</p>
+            <p><strong class="label">Mediation:</strong> Our team resolves disputes fairly within 5 business days.</p>
+        </div>
+    </div>
+</section>
+
+<section class="testimonials">
+
+<section class="faq-section" id="faq">
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <div class="faq-container">
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>How do I know the products are authentic?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                All sellers on DeadStock Exchange are verified and rated by the community. We require real product photos (not stock images) and provide a 48-hour inspection window. If items don't match the listing, we guarantee a full refund. Our trust & safety team monitors all transactions.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>What are shipping costs and timelines?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                Shipping is quoted at checkout based on item weight, destination, and carrier. Most items ship within 48 hours of purchase. We partner with FedEx, UPS, and DHL for competitive rates. Local pickup is available for many listings (free shipping).
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Is my payment protected?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                Yes! Your payment is held in escrow through our Stripe integration until you confirm receipt of goods. You have 48 hours to inspect items. If there are any issues, we'll either arrange a refund or send replacements at no cost to you.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Can I return items?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                Items can be returned within 48 hours of delivery if they don't match the listing description. Simply contact the seller or our support team. Return shipping is covered by us. Refunds are processed within 3-5 business days.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Are there bulk discounts?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                Yes! Many sellers offer volume discounts. You can message sellers directly to negotiate prices for larger quantities. Our platform handles multi-lot purchases seamlessly with consolidated shipping options.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Do you ship internationally?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                Currently, we operate within the United States. International shipping is coming in Q2 2026. You can sign up for our waitlist to be notified when we expand to your country.
+            </div>
+        </div>
+
+        <div style="border-top: 2px solid #ddd; padding-top: 30px; margin-top: 30px;">
+            <h3 style="color: var(--primary); margin-bottom: 20px;">For Sellers & Partners</h3>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>What's your commission? Can I negotiate?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                Standard commission is 7%. For large operations moving 10,000+ units, we can negotiate down to 5%. No upfront fees, no listing costs—we only profit when you profit. Featured listing packages available for $50-$200 per item to accelerate sales.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>How long does it take to sell my inventory?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                Average time to sale varies by category. Electronics: 5-14 days. Fabric/raw materials: 3-7 days. Seasonal items: Variable. Our platform provides an inventory age tracker + automated discounting rules so you can optimize pricing in real-time. Items with competitive pricing typically sell within 2 weeks.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Do I need to handle shipping?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                You pack and ship or arrange local pickup. We provide real-time shipping quotes integrated into the checkout. For bulk orders, our whitebox fulfillment service can arrange pickup directly from your warehouse (negotiable rates). You just provide tracking info and we handle the rest.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Can I upload 1,000+ items at once?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                Yes! Our bulk upload tool accepts Excel/CSV files with unlimited items. Auto-categorization, batch image uploads, and validation reports included. One upload can list 10,000 SKUs. Coming in Phase 2 (Q2 2026).
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>How does the inventory age tracker help me?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                Your dashboard shows exactly how long each item has been listed. Automatic alerts trigger when items approach 30+ days. You can set auto-discount rules: "Every 7 days without a sale, drop price 5%." This aggressive approach clears slow-moving inventory fast.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>What happens if a buyer claims the item is damaged?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                Buyers have a 48-hour inspection window. If they submit a damage claim with photos, we mediate fairly. If you shipped properly (good packaging) and item was insured, you're usually protected. If you shipped carelessly or misrepresented condition, you may face a refund or replacement cost. Transparency = protection.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>How do I get the "Verified Seller" badge?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                Complete KYC verification: submit business ID, proof of address, tax ID. Takes 2-3 business days. Higher buyer confidence = more visibility in search = faster sales. No cost, optional but highly recommended for B2B sellers.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>When do I get paid?</span>
+                <span class="faq-toggle">+</span>
+            </div>
+            <div class="faq-answer">
+                After buyer confirms receipt (max 50 hours after delivery), we transfer your payment within 2 business days to your connected bank account. Funds held in escrow protect both parties. No fees for payouts—we handle all payment processing.
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>About Us</h4>
+            <a href="#">Our Story</a>
+            <a href="#">Team</a>
+            <a href="#">Careers</a>
+            <a href="#">Press</a>
+        </div>
+        <div class="footer-section">
+            <h4>For Buyers</h4>
+            <a href="#">Browse Inventory</a>
+            <a href="#">How It Works</a>
+            <a href="#">Shipping Info</a>
+            <a href="#">Protection Policy</a>
+        </div>
+        <div class="footer-section">
+            <h4>For Sellers</h4>
+            <a href="#">Become a Seller</a>
+            <a href="#">Seller Tools</a>
+            <a href="#">Pricing</a>
+            <a href="#">Resources</a>
+        </div>
+        <div class="footer-section">
+            <h4>Support</h4>
+            <a href="#">Contact Us</a>
+            <a href="#">Help Center</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 DeadStock Exchange. All rights reserved. | Built with 💚 for inventory sustainability</p>
+    </div>
+</footer>
+
+<script>
+    function toggleFAQ(element) {
+        const answer = element.nextElementSibling;
+        const toggle = element.querySelector('.faq-toggle');
+        
+        // Close all other FAQs
+        document.querySelectorAll('.faq-answer.show').forEach(item => {
+            if (item !== answer) {
+                item.classList.remove('show');
+                item.previousElementSibling.querySelector('.faq-toggle').classList.remove('active');
+            }
+        });
+        
+        // Toggle current FAQ
+        answer.classList.toggle('show');
+        toggle.classList.toggle('active');
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.card');
+        
+        cards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            card.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+    });
+
+    // Heart button animation
+    document.querySelectorAll('.heart-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            this.classList.toggle('active');
+        });
+    });
+
+    // Check if user is logged in
+    function checkSession() {
+        const buyerSession = localStorage.getItem('buyerSession');
+        const loggedInUserSpan = document.getElementById('loggedInUser');
+        
+        if (!buyerSession) {
+            window.location.href = 'buyer-login.html';
+            return;
+        }
+        
+        try {
+            const session = JSON.parse(buyerSession);
+            loggedInUserSpan.textContent = '👤 ' + session.email;
+        } catch(e) {
+            window.location.href = 'buyer-login.html';
+        }
+    }
+
+    // Logout function
+    function logout() {
+        localStorage.removeItem('buyerSession');
+        sessionStorage.clear();
+        window.location.href = 'logout.html';
+    }
+
+    // Check session on page load
+    checkSession();
+</script>
+
+</body>
+</html>

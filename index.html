@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeadStock Exchange | B2B Inventory Clearinghouse</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #27ae60;
+            --light: #f4f7f6;
+            --dark: #333;
+            --danger: #e74c3c;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logo span { color: var(--accent); }
+
+        nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover { color: var(--accent); }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .btn:hover { 
+            background: #219150;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(44,62,80,0.95) 0%, rgba(39,174,96,0.95) 100%);
+            color: white;
+            padding: 120px 5%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect fill="%23transparent" width="1200" height="600"/><rect fill="url(%23dots)" width="1200" height="600"/></svg>');
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin: 0 0 20px 0;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin: 0 0 40px 0;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-large {
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+        }
+
+        .hero .btn-large {
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .hero .btn-large:hover {
+            background: var(--light);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 5%;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            color: var(--primary);
+            margin: 20px 0 15px 0;
+            font-size: 1.3rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .section {
+            padding: 80px 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 50px;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: center;
+        }
+
+        .two-col img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .two-col h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .two-col p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .buyer-section {
+            background: white;
+        }
+
+        .seller-section {
+            background: var(--light);
+        }
+
+        .stats-section {
+            background: var(--accent);
+            color: white;
+            padding: 60px 5%;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+        }
+
+        .stat-item p {
+            font-size: 1rem;
+            opacity: 0.95;
+            margin: 0;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 80px 5%;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 40px 5%;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .footer-section a {
+            display: block;
+            color: #ccc;
+            text-decoration: none;
+            margin-bottom: 8px;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">DeadStock<span>X</span></div>
+    <nav>
+        <a href="#buyers">For Buyers</a>
+        <a href="seller-info.html">For Sellers</a>
+        <a href="sales-enhanced.html">Browse Inventory</a>
+        <div class="auth-buttons">
+            <a href="buyer-login.html" class="btn">Buyer Login</a>
+            <a href="seller-login.html" class="btn btn-secondary">Seller Portal</a>
+        </div>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Turn Dead Stock Into Cash</h1>
+        <p>The #1 B2B Marketplace for Overstocked, Out-of-Season, and Discontinued Inventory</p>
+        <div class="cta-buttons">
+            <a href="buyer-login.html" class="btn btn-large">Start Buying</a>
+            <a href="seller-login.html" class="btn btn-large" style="background: var(--accent); color: white;">List Your Inventory</a>
+        </div>
+    </div>
+</section>
+
+<section style="padding: 60px 5%; background: white;">
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Fast Sales</h3>
+            <p>Move inventory in days, not months. Average time to sale: 5-14 days depending on category.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">💰</div>
+            <h3>Maximum Revenue</h3>
+            <p>Keep 93-95% of every sale. Only 5-7% commission. No upfront fees, no listing costs.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>Secure & Safe</h3>
+            <p>Escrow payments, verified sellers, 48-hour inspection window. Your transaction is protected.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📦</div>
+            <h3>Logistics Built-In</h3>
+            <p>Real-time shipping quotes. Local pickup options. Free shipping on qualified orders.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Smart Tools</h3>
+            <p>Bulk upload, inventory tracking, auto-discounting. Everything you need to clear stock fast.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🌍</div>
+            <h3>Global Reach</h3>
+            <p>Connect with 5,000+ verified sellers and 50,000+ active buyers nationwide.</p>
+        </div>
+    </div>
+</section>
+
+<section class="stats-section" id="buyers">
+    <h2 class="section-title" style="color: white; margin-bottom: 50px;">Why Buyers Love DeadStock Exchange</h2>
+    <div class="stats-grid">
+        <div class="stat-item">
+            <h3>$50M+</h3>
+            <p>In inventory moved</p>
+        </div>
+        <div class="stat-item">
+            <h3>5,000+</h3>
+            <p>Verified sellers</p>
+        </div>
+        <div class="stat-item">
+            <h3>98%</h3>
+            <p>Buyer satisfaction</p>
+        </div>
+        <div class="stat-item">
+            <h3>48hrs</h3>
+            <p>Avg completion time</p>
+        </div>
+    </div>
+</section>
+
+<section class="buyer-section section">
+    <div class="two-col">
+        <div>
+            <h2>For Buyers: Find Deals You Won't Believe</h2>
+            <p>Access wholesale inventory at 50-75% below retail. Whether you're a discount retailer, reseller, manufacturer, or bargain hunter, find what you need at the price you want.</p>
+            <ul style="color: #666; line-height: 2.2; font-size: 1rem;">
+                <li>✓ Browse 10,000+ active listings</li>
+                <li>✓ Advanced filters & smart search</li>
+                <li>✓ Watchlist alerts for price drops</li>
+                <li>✓ Bulk negotiation with sellers</li>
+                <li>✓ Real-time shipping quotes</li>
+                <li>✓ 48-hour inspection guarantee</li>
+            </ul>
+            <a href="buyer-login.html" class="btn btn-large">Start Shopping</a>
+        </div>
+        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=500&q=60" alt="Buyer browsing inventory">
+    </div>
+</section>
+
+<section class="seller-section section" id="sellers">
+    <div class="two-col">
+        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=500&q=60" alt="Seller managing inventory">
+        <div>
+            <h2>For Sellers: Clear Inventory, Free Up Space</h2>
+            <p>Stop paying to store dead stock. List it free, sell it fast, keep 93% of proceeds. We handle marketing, payments, and logistics. You just pack and ship.</p>
+            <ul style="color: #666; line-height: 2.2; font-size: 1rem;">
+                <li>✓ Zero upfront fees or listing costs</li>
+                <li>✓ Bulk upload (1,000+ items at once)</li>
+                <li>✓ Inventory age tracker & analytics</li>
+                <li>✓ Auto-discounting (5% off per week)</li>
+                <li>✓ Verified seller badges & ratings</li>
+                <li>✓ Integrated shipping & fulfillment</li>
+            </ul>
+            <a href="seller-login.html" class="btn btn-large">Become a Seller</a>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <h2>Ready to Transform Your Inventory?</h2>
+    <p>Join thousands of sellers and buyers moving dead stock every day</p>
+    <div class="cta-buttons" style="justify-content: center; gap: 20px;">
+        <a href="buyer-login.html" class="btn btn-large" style="background: white; color: var(--primary);">I'm a Buyer</a>
+        <a href="seller-login.html" class="btn btn-large" style="background: white; color: var(--primary);">I'm a Seller</a>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>About</h4>
+            <a href="#">Our Story</a>
+            <a href="#">Team</a>
+            <a href="#">Careers</a>
+            <a href="#">Press</a>
+        </div>
+        <div class="footer-section">
+            <h4>For Buyers</h4>
+            <a href="#">How It Works</a>
+            <a href="#">Shipping Info</a>
+            <a href="#">Protection Policy</a>
+            <a href="#">Help Center</a>
+        </div>
+        <div class="footer-section">
+            <h4>For Sellers</h4>
+            <a href="seller-info.html">Seller Guide</a>
+            <a href="seller-info.html#pricing">Pricing</a>
+            <a href="seller-info.html#how-it-works">Tools & Resources</a>
+            <a href="seller-login.html">Seller Portal</a>
+        </div>
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Report Abuse</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 DeadStock Exchange. All rights reserved. | Turning Inventory Into Opportunity</p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Shopping Cart | DeadStock Exchange</title>
+    <style>
+        :root{--primary:#2c3e50;--accent:#27ae60;--light:#f4f7f6;--dark:#333}
+        body{font-family:Segoe UI, Tahoma, Geneva, Verdana,sans-serif;margin:0;background:var(--light);color:var(--dark)}
+        header{background:var(--primary);color:#fff;padding:12px 5%;display:flex;justify-content:space-between;align-items:center}
+        .logo{font-weight:700}
+        .container{max-width:1000px;margin:30px auto;padding:0 20px}
+        .card{background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+        table{width:100%;border-collapse:collapse}
+        th,td{padding:12px;border-bottom:1px solid #eee;text-align:left}
+        .qty{width:80px}
+        .actions{display:flex;gap:10px}
+        .btn{background:var(--accent);color:#fff;padding:10px 16px;border-radius:6px;border:none;cursor:pointer}
+        .btn.secondary{background:#3498db}
+        .muted{color:#666}
+        .right{text-align:right}
+        .empty{padding:40px;text-align:center;color:#777}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">DeadStock<span style="color:var(--accent)">X</span></div>
+        <nav>
+            <a href="sales-enhanced.html" style="color:#fff;text-decoration:none;margin-right:16px">Continue Shopping</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Your Cart</h2>
+            <div id="cartContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        function format(n){return '$'+n.toFixed(2)}
+        function loadCart(){
+            const cart = JSON.parse(localStorage.getItem('cart')||'[]');
+            const container = document.getElementById('cartContainer');
+            if(!cart.length){container.innerHTML='<div class="empty">Your cart is empty.</div>';return}
+            let html='<table><thead><tr><th>Product</th><th class="qty">Qty</th><th>Unit</th><th class="right">Line</th><th></th></tr></thead><tbody>';
+            let subtotal=0;
+            cart.forEach((it,idx)=>{const line=it.price*it.quantity; subtotal+=line; html+=`<tr data-idx="${idx}"><td><strong>${it.name}</strong><div class="muted">${it.id}</div></td><td><input class="qty" type="number" min="1" value="${it.quantity}" data-idx="${idx}"></td><td>${format(it.price)}</td><td class="right">${format(line)}</td><td><button data-idx="${idx}" class="remove">Remove</button></td></tr>`});
+            html+='</tbody></table>';
+            const fee = subtotal*0.025; const total = subtotal+fee; 
+            html+=`<div style="margin-top:18px;text-align:right"><div class="muted">Subtotal: ${format(subtotal)}</div><div class="muted">Platform Fee (2.5%): ${format(fee)}</div><h3>Total: ${format(total)}</h3><div style="margin-top:12px"><button id="checkout" class="btn">Proceed to Checkout</button> <button id="clear" class="btn secondary">Clear Cart</button></div></div>`;
+            container.innerHTML=html;
+            document.querySelectorAll('.remove').forEach(btn=>btn.addEventListener('click',e=>{const i=+e.target.dataset.idx; removeFromCart(i)}));
+            document.querySelectorAll('input.qty').forEach(inp=>inp.addEventListener('change',e=>{const i=+e.target.dataset.idx; updateQty(i, Math.max(1,parseInt(e.target.value)||1))}));
+            document.getElementById('checkout').addEventListener('click',()=>{checkout(total)});
+            document.getElementById('clear').addEventListener('click',clearCart);
+        }
+        function saveCart(cart){localStorage.setItem('cart',JSON.stringify(cart)); window.dispatchEvent(new Event('cartUpdated'));}
+        function removeFromCart(idx){let c=JSON.parse(localStorage.getItem('cart')||'[]'); c.splice(idx,1); saveCart(c); loadCart();}
+        function updateQty(idx,q){let c=JSON.parse(localStorage.getItem('cart')||'[]'); if(c[idx]){c[idx].quantity=q; saveCart(c); loadCart();}}
+        function clearCart(){if(!confirm('Clear cart?')) return; localStorage.removeItem('cart'); loadCart();}
+        function checkout(total){ // redirect to payment processor with total
+            const url = 'payment-processor.html?type=buyer&cartTotal='+encodeURIComponent(total);
+            window.location.href = url;
+        }
+        window.addEventListener('DOMContentLoaded', loadCart);
+    </script>
+</body>
+</html>

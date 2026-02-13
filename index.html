@@ -329,41 +329,7 @@
             color: #ccc;
             font-size: 0.9rem;
         }
-
-        @media (max-width: 768px) {
-            nav {
-                display: none;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .two-col {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
+  </style>
 </head>
 <body>
 
@@ -373,6 +339,7 @@
         <a href="#buyers">For Buyers</a>
         <a href="seller-info.html">For Sellers</a>
         <a href="sales-enhanced.html">Browse Inventory</a>
+        <a href="cart.html" style="color: white; margin-right: 12px; text-decoration: none; font-weight: 600;">🛒 <span id="cartCount">0</span></a>
         <div class="auth-buttons">
             <a href="buyer-login.html" class="btn">Buyer Login</a>
             <a href="seller-login.html" class="btn btn-secondary">Seller Portal</a>
@@ -530,6 +497,17 @@
         <p>&copy; 2026 DeadStock Exchange. All rights reserved. | Turning Inventory Into Opportunity</p>
     </div>
 </footer>
+
+<script>
+    function updateCartCount(){
+        const el = document.getElementById('cartCount');
+        if(!el) return;
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        el.textContent = cart.reduce((s,i)=>s+(i.quantity||0),0);
+    }
+    window.addEventListener('storage', (e)=>{ if(e.key === 'cart') updateCartCount(); });
+    document.addEventListener('DOMContentLoaded', updateCartCount);
+</script>
 
 </body>
 </html>

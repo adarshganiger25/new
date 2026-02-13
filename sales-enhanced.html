@@ -901,6 +901,7 @@
         <a href="#marketplace">Browse Stock</a>
         <a href="#how-it-works">How it Works</a>
         <a href="#faq">FAQ</a>
+        <a href="cart.html" style="color: white; margin-right: 12px; text-decoration: none; font-weight: 600;">🛒 <span id="cartCount">0</span></a>
         <div class="auth-buttons">
             <span id="loggedInUser" style="color: white; font-weight: 500; margin-right: 20px;"></span>
             <a href="#" class="btn" onclick="logout(); return false;">Logout</a>
@@ -1001,6 +1002,7 @@
                         </div>
                         <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 12px;">View Details</a>
                         <a href="payment-processor.html?product=smart-watches&price=750" class="btn" style="width: 100%; text-align: center; margin-top: 8px; background: #27ae60;">💳 Buy Now</a>
+                        <button class="btn" onclick="addToCart('smart-watches','Bulk Smart Watches',750)" style="width:100%;margin-top:8px;background:#f1c40f;color:#000">🛒 Add to Cart</button>
                     </div>
                 </div>
 
@@ -1022,6 +1024,7 @@
                         </div>
                         <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 12px;">View Details</a>
                         <a href="payment-processor.html?product=pipe-fittings&price=300" class="btn" style="width: 100%; text-align: center; margin-top: 8px; background: #27ae60;">💳 Buy Now</a>
+                        <button class="btn" onclick="addToCart('pipe-fittings','Industrial Pipe Fittings',300)" style="width:100%;margin-top:8px;background:#f1c40f;color:#000">🛒 Add to Cart</button>
                     </div>
                 </div>
 
@@ -1043,6 +1046,7 @@
                         </div>
                         <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 12px;">View Details</a>
                         <a href="payment-processor.html?product=athletic-shoes&price=450" class="btn" style="width: 100%; text-align: center; margin-top: 8px; background: #27ae60;">💳 Buy Now</a>
+                        <button class="btn" onclick="addToCart('athletic-shoes','Last Season Athletic Shoes',450)" style="width:100%;margin-top:8px;background:#f1c40f;color:#000">🛒 Add to Cart</button>
                     </div>
                 </div>
 
@@ -1064,6 +1068,7 @@
                         </div>
                         <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 12px;">View Details</a>
                         <a href="payment-processor.html?product=mixed-electronics&price=2100" class="btn" style="width: 100%; text-align: center; margin-top: 8px; background: #27ae60;">💳 Buy Now</a>
+                        <button class="btn" onclick="addToCart('mixed-electronics','Inventory Clearance - Mixed Lot',2100)" style="width:100%;margin-top:8px;background:#f1c40f;color:#000">🛒 Add to Cart</button>
                     </div>
                 </div>
 
@@ -1085,6 +1090,7 @@
                         </div>
                         <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 12px;">View Details</a>
                         <a href="payment-processor.html?product=fabric-stock&price=800" class="btn" style="width: 100%; text-align: center; margin-top: 8px; background: #27ae60;">💳 Buy Now</a>
+                        <button class="btn" onclick="addToCart('fabric-stock','Premium Fabric Roll Stock',800)" style="width:100%;margin-top:8px;background:#f1c40f;color:#000">🛒 Add to Cart</button>
                     </div>
                 </div>
 
@@ -1106,6 +1112,7 @@
                         </div>
                         <a href="#" class="btn" style="width: 100%; text-align: center; margin-top: 12px;">View Details</a>
                         <a href="payment-processor.html?product=office-furniture&price=1200" class="btn" style="width: 100%; text-align: center; margin-top: 8px; background: #27ae60;">💳 Buy Now</a>
+                        <button class="btn" onclick="addToCart('office-furniture','Office Furniture Bundle',1200)" style="width:100%;margin-top:8px;background:#f1c40f;color:#000">🛒 Add to Cart</button>
                     </div>
                 </div>
             </div>
@@ -1689,6 +1696,31 @@
 
     // Check session on page load
     checkSession();
+
+    // Cart functions
+    function addToCart(id, name, price) {
+        const key = 'cart';
+        let cart = JSON.parse(localStorage.getItem(key) || '[]');
+        const existing = cart.find(i => i.id === id);
+        if (existing) { existing.quantity += 1; } else { cart.push({ id, name, price: Number(price), quantity: 1 }); }
+        localStorage.setItem(key, JSON.stringify(cart));
+        // notify current tab and other tabs
+        window.dispatchEvent(new Event('cartUpdated'));
+        updateCartCount();
+        alert(name + ' added to cart');
+    }
+
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const count = cart.reduce((s, i) => s + (i.quantity || 0), 0);
+        const el = document.getElementById('cartCount');
+        if (el) el.textContent = count;
+    }
+
+    // update cart count when cart changes (local event)
+    window.addEventListener('cartUpdated', updateCartCount);
+    window.addEventListener('storage', function(e){ if (e.key === 'cart') updateCartCount(); });
+    document.addEventListener('DOMContentLoaded', updateCartCount);
 </script>
 
 </body>
